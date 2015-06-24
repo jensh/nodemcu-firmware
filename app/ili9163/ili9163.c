@@ -266,7 +266,7 @@ void ili9163_init(void) {
 	ili9163_writecommand(CMD_RAMWR);//Memory Write
 
 	// delay(1);
-	ili9163_fillScreen(0x0000);
+	// ili9163_fillScreen(0x0000);
 }
 
 

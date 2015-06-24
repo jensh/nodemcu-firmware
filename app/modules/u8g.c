@@ -1180,9 +1180,6 @@ static int lu8g_ili9163c( lua_State *L )
 #else
     u8g_Init( LU8G, &u8g_dev_ili9163c);
 #endif
-    // Avoid problems with unset fonts.
-    lud->u8g.font = NULL;
-    u8g_SetFontPosBaseline( LU8G );
 
     // set its metatable
     luaL_getmetatable(L, "u8g.display");
