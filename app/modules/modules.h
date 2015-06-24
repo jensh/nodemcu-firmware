@@ -61,6 +61,14 @@
 #define ROM_MODULES_U8G
 #endif
 
+#if defined(LUA_USE_MODULES_ILI9163)
+#define MODULES_ILI9163   "ili9163"
+#define ROM_MODULES_ILI9163   \
+    _ROM(MODULES_ILI9163, luaopen_ili9163, ili9163_map)
+#else
+#define ROM_MODULES_U8G
+#endif
+
 #if defined(LUA_USE_MODULES_I2C)
 #define MODULES_I2C       "i2c"
 #define ROM_MODULES_I2C   \
@@ -156,6 +164,7 @@
         ROM_MODULES_COAP	\
         ROM_MODULES_MQTT    \
         ROM_MODULES_U8G     \
+        ROM_MODULES_ILI9163 \
         ROM_MODULES_I2C     \
         ROM_MODULES_SPI     \
         ROM_MODULES_TMR     \

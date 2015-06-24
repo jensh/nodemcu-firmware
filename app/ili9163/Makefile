@@ -12,7 +12,7 @@
 #     a generated lib/image xxx.a ()
 #
 ifndef PDIR
-GEN_LIBS = libmodules.a
+GEN_LIBS = ili9163lib.a
 endif
 
 #############################################################
@@ -39,16 +39,8 @@ endif
 INCLUDES := $(INCLUDES) -I $(PDIR)include
 INCLUDES += -I ./
 INCLUDES += -I ../libc
-INCLUDES += -I ../coap
-INCLUDES += -I ../mqtt
-INCLUDES += -I ../u8glib
 INCLUDES += -I ../ili9163
-INCLUDES += -I ../lua
 INCLUDES += -I ../platform
-INCLUDES += -I ../wofs
-INCLUDES += -I ../spiffs
-INCLUDES += -I ../smart
-INCLUDES += -I ../cjson
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
 
