@@ -163,7 +163,6 @@ void ili9163_setRotation(uint8_t m) {
 }
 
 
-static
 void ili9163_fillScreen(uint16_t color) {
 	int px;
 
@@ -173,7 +172,6 @@ void ili9163_fillScreen(uint16_t color) {
 }
 
 
-static
 void ili9163_clearScreen(void) {
 	ili9163_fillScreen(0x0000 /* Black */);
 }

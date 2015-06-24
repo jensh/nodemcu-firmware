@@ -91,6 +91,9 @@ uint8_t u8g_dev_ili9163c_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg)
 	ili9163_drawPixel(p->x, p->y, u8g_ili9163c_get_color(p));
 	break;
     }
+    case U8G_DEV_MSG_PAGE_FIRST:
+	ili9163_clearScreen();
+	break;
     case U8G_DEV_MSG_PAGE_NEXT:
 	return 0;
     case U8G_DEV_MSG_GET_PAGE_BOX: {
