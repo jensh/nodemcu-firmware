@@ -26,6 +26,12 @@ static
 uint8_t rotation = 0;
 int16_t _width, _height;
 
+#if 0
+// Disable SPI
+#define platform_gpio_write(x, y)
+#define platform_gpio_mode(x, y, z)
+#endif
+
 static
 void spiwrite(uint8_t c) {
 	uint8_t cnt;
@@ -108,6 +114,19 @@ void ili9163_setAddr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 		ili9163_writedata16(y1);
 	}
 	ili9163_writecommand(CMD_RAMWR); //Into RAM
+}
+
+
+static inline
+int ili9163_boundaryCheck(uint16_t x, uint16_t y) {
+	return x >= _width || y >= _height;
+}
+
+
+void ili9163_drawPixel(uint16_t x, uint16_t y, uint16_t color) {
+	if (ili9163_boundaryCheck(x,y)) return;
+	ili9163_setAddr(x,y,x+1,y+1);
+	ili9163_writedata16(color);
 }
 
 
@@ -249,7 +268,7 @@ void ili9163_init(void) {
 	ili9163_writecommand(CMD_RAMWR);//Memory Write
 
 	// delay(1);
-	ili9163_fillScreen(0xf400);
+	ili9163_fillScreen(0x0000);
 }
 
 

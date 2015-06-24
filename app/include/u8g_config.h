@@ -16,6 +16,6 @@
 #define U8G_SSD1306_128x64_SPI
 // untested
 #undef U8G_PCD8544_84x48
-
+#define U8G_ILI9163C
 
 #endif	/* __U8G_CONFIG_H__ */

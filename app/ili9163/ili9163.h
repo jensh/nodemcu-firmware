@@ -21,7 +21,9 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 */
+#include "c_types.h"
 
 void ili9163_begin(void);
+void ili9163_drawPixel(uint16_t x, uint16_t y, uint16_t color);
 
 #endif /* _ILI9163_H_ */

@@ -282,6 +282,19 @@ static int lu8g_getColorIndex( lua_State *L )
     return 1;
 }
 
+// Lua: u8g.setRGB( self, r, g, b )
+static int lu8g_setRGB( lua_State *L )
+{
+    lu8g_userdata_t *lud;
+
+    if ((lud = get_lud( L )) == NULL)
+        return 0;
+
+    u8g_SetRGB( LU8G, luaL_checkinteger( L, 2 ), luaL_checkinteger( L, 3 ), luaL_checkinteger( L, 4 ) );
+
+    return 0;
+}
+
 static int lu8g_generic_drawStr( lua_State *L, uint8_t rot )
 {
     lu8g_userdata_t *lud;
@@ -295,6 +308,9 @@ static int lu8g_generic_drawStr( lua_State *L, uint8_t rot )
     const char *s = luaL_checkstring( L, (1+2) + 1 );
     if (s == NULL)
         return 0;
+
+    if (!lud->u8g.font)
+	return luaL_error( L, "no font" );
 
     switch (rot)
     {
@@ -1133,6 +1149,49 @@ static int lu8g_pcd8544_84x48( lua_State *L )
 }
 
 
+uint8_t u8g_dev_ili9163c_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
+// Lua: object = u8g.ili9163c( a0=9, CS=10, SCK=4, SDA=3 ) not yet adjustable!
+static int lu8g_ili9163c( lua_State *L )
+{
+    /*
+    unsigned sce = luaL_checkinteger( L, 1 );
+    if (sce == 0)
+        return luaL_error( L, "SCE pin required" );
+    unsigned dc = luaL_checkinteger( L, 2 );
+    if (dc == 0)
+        return luaL_error( L, "D/C pin required" );
+    unsigned res = luaL_checkinteger( L, 3 );
+    if (res == 0)
+        return luaL_error( L, "RES pin required" );
+    */
+    lu8g_userdata_t *lud = (lu8g_userdata_t *) lua_newuserdata( L, sizeof( lu8g_userdata_t ) );
+
+    // Don't use the pre-defined device structure for u8g_dev_pcd8544_84x48_hw_spi here
+    // Reason: linking the pre-defined structures allocates RAM for the device/comm structure
+    //         *before* the display is constructed (especially the page buffers)
+    //         this consumes heap even when the device is not used at all
+#if 1
+    // build device entry
+    lud->dev = (u8g_dev_t){ u8g_dev_ili9163c_fn, NULL, NULL };
+    lud->pb.buf = NULL;
+
+    // and finally init device using specific interface init function
+    u8g_Init( LU8G, &(lud->dev) );
+#else
+    u8g_Init( LU8G, &u8g_dev_ili9163c);
+#endif
+    // Avoid problems with unset fonts.
+    lud->u8g.font = NULL;
+    u8g_SetFontPosBaseline( LU8G );
+
+    // set its metatable
+    luaL_getmetatable(L, "u8g.display");
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
+
 // Module function map
 #define MIN_OPT_LEVEL 2
 #include "lrodefs.h"
@@ -1156,6 +1215,7 @@ static const LUA_REG_TYPE lu8g_display_map[] =
     { LSTRKEY( "getMode" ),  LFUNCVAL( lu8g_getMode ) },
     { LSTRKEY( "setColorIndex" ),  LFUNCVAL( lu8g_setColorIndex ) },
     { LSTRKEY( "getColorIndex" ),  LFUNCVAL( lu8g_getColorIndex ) },
+    { LSTRKEY( "setRGB" ),  LFUNCVAL( lu8g_setRGB ) },
     { LSTRKEY( "drawStr" ),  LFUNCVAL( lu8g_drawStr ) },
     { LSTRKEY( "drawStr90" ),  LFUNCVAL( lu8g_drawStr90 ) },
     { LSTRKEY( "drawStr180" ),  LFUNCVAL( lu8g_drawStr180 ) },
@@ -1204,6 +1264,9 @@ const LUA_REG_TYPE lu8g_map[] =
 #endif
 #ifdef U8G_PCD8544_84x48
     { LSTRKEY( "pcd8544_84x48" ), LFUNCVAL ( lu8g_pcd8544_84x48 ) },
+#endif
+#ifdef U8G_ILI9163C
+    { LSTRKEY( "ili9163c" ), LFUNCVAL ( lu8g_ili9163c ) },
 #endif
 
 #if LUA_OPTIMIZE_MEMORY > 0
