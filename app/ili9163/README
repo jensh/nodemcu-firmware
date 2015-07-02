@@ -1,0 +1,51 @@
+Schema
+
+ILI9163c
+------------
+1 LED	--[ 22Ω]-- V3.3
+2 SCK   ---------- ESP:GPIO2
+3 SDA   --[270Ω]-- ESP:GPIO0
+4 A0    ---------- ESP:RXD
+5 RESET --[270Ω]-- V3.3
+6 CS	---------- ESP:TXD
+7 GND	- GND
+8 Vcc	- V3.3
+
+
+ESP8266-01
+-------------
+    RXD o o Vcc
+  GPIO0 o o RST
+  GPIO2 o o CH_PD
+    GND o o TXD
+
+RXD	---------- ILI:A0
+	'-[270Ω]-- FTDI:TXD
+GPIO0	--[270Ω]-- ILI:SDA
+	'-[270Ω]-- PullDownSwitch -- GND	Flash button
+GPIO2	---------- ILI:SCK
+GND	- GND
+Vcc	- V3.3
+RST	--[270Ω]-- PullDownSwitch -- GND	Reset button
+CH_PD	--[10kΩ]-- V3.3
+TXD	---------- ILI:CS
+	'-[270Ω]-- FTDI:RXD
+
+
+FTDI
+-----
+DTR	-o
+RXD	--[270Ω]-- ESP:TXD
+TXD	--[270Ω]-- ESP:RXD
+Vcc	- PullDown:In	(5V!)
+CTS	- GND
+GND	- GND
+
+FTDI 3.3V out is not strong enough to power the ESP8266. Check RXD and TXD to be at 3.3V level.
+
+
+PullDown 5V to 3.3V
+--------------------
+GND	- GND
+Vout	- V3.3
+Vin	- FTDI:Vcc (5V)
